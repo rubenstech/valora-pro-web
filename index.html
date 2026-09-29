@@ -649,8 +649,10 @@
                 remateTotal: currentValuationData.remateTotal
             };
 
-// Enviar datos en segundo plano a Google Sheet (si se configuró la URL)
-            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzium_Tlm-KjXLp1l6fMePplw2HvwsQCtWjwfaB-R3msNah5bVdO0BnFl0jA4rZnDmp/exec";") {
+       // Enviar datos en segundo plano a Google Sheet (si se configuró la URL)
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzium_Tlm-KjXLp1l6fMePplw2HvwsQCtWjwfaB-R3msNah5bVdO0BnFl0jA4rZnDmp/exec";
+
+            if (GOOGLE_SCRIPT_URL) {
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
