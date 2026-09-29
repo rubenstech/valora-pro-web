@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ValoraPro - Tasación Inmobiliaria Interactiva & Gamificada (Lima)</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-hover: #aa8c2c;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 5px;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            color: var(--gold);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--gold-light);
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        button.btn-main {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--gold);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        button.btn-main:hover {
+            background-color: var(--gold-hover);
+            color: #ffffff;
+        }
+
+        .results {
+            margin-top: 30px;
+            border-top: 2px solid var(--border-color);
+            padding-top: 25px;
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .result-card {
+            background: #0f172a;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-card.market { border-left: 5px solid var(--gold); }
+        .result-card.express { border-left: 5px solid #38bdf8; }
+        .result-card.remate { border-left: 5px solid #f43f5e; }
+
+        .result-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--gold-light);
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 14px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .bar-wrapper {
+            margin-bottom: 10px;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-track {
+            background: var(--border-color);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        .bar-market { background-color: var(--gold); }
+        .bar-express { background-color: #38bdf8; }
+        .bar-remate { background-color: #f43f5e; }
+
+        .report-box {
+            margin-top: 20px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px dashed var(--gold);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .report-box strong {
+            color: var(--gold);
+        }
+
+        .gamification-box {
+            margin-top: 25px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .rating-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rate-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .rate-btn:hover, .rate-btn.selected {
+            background: var(--gold);
+            color: #0f172a;
+            border-color: var(--gold);
+        }
+
+        .lead-capture {
+            margin-top: 25px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(30, 41, 59, 0.8));
+            border: 1px solid var(--gold);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .lead-capture h3 {
+            color: var(--gold);
+            margin-top: 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .success-msg {
+            color: var(--success);
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ValoraPro</h1>
+        <p class="subtitle">Simulador Inmobiliario Inteligente & Gamificado (Lima)</p>
+
+        <!-- UBICACIÓN Y TIPO -->
+        <div class="section-title">1. Ubicación y Tipo de Inmueble</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="district">Distrito:</label>
+                <select id="district"></select>
+            </div>
+            <div class="form-group">
+                <label for="propertyType">Tipo de Inmueble:</label>
+                <select id="propertyType">
+                    <option value="depa">Departamento</option>
+                    <option value="casa">Casa</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- DIMENSIONES -->
+        <div class="section-title">2. Dimensiones de la Propiedad</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="techadaArea">Área Techada (m²):</label>
+                <input type="number" id="techadaArea" placeholder="Ej. 90" min="1" value="90">
+            </div>
+            <div class="form-group">
+                <label for="totalArea">Área Total / Terreno (m²):</label>
+                <input type="number" id="totalArea" placeholder="Ej. 120" min="1" value="120">
+            </div>
+        </div>
+
+        <!-- CARACTERÍSTICAS TÉCNICAS -->
+        <div class="section-title">3. Características y Distribución</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="antiguedad">Antigüedad (Años):</label>
+                <input type="number" id="antiguedad" placeholder="Ej. 5" min="0" value="5">
+            </div>
+            <div class="form-group">
+                <label for="dormitorios">Dormitorios:</label>
+                <select id="dormitorios">
+                    <option value="1">1 Dormitorio</option>
+                    <option value="2">2 Dormitorios</option>
+                    <option value="3" selected>3 Dormitorios</option>
+                    <option value="4">4+ Dormitorios</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="banos">Baños:</label>
+                <select id="banos">
+                    <option value="1">1 Baño</option>
+                    <option value="2" selected>2 Baños</option>
+                    <option value="3">3 Baños</option>
+                    <option value="4">4+ Baños</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cocheras">Cocheras:</label>
+                <select id="cocheras">
+                    <option value="0">Sin cochera</option>
+                    <option value="1" selected>1 Cochera</option>
+                    <option value="2">2 o más cocheras</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="cocina">Tipo de Cocina:</label>
+                <select id="cocina">
+                    <option value="tradicional">Tradicional / Cerrada</option>
+                    <option value="americana" selected>Moderna / Americana</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jardin">Áreas Exteriores:</label>
+                <select id="jardin">
+                    <option value="no">No posee</option>
+                    <option value="si" selected>Sí posee (Terraza/Jardín)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="calculateValuation()">⚡ Ejecutar Tasación Interactiva</button>
+
+        <!-- RESULTADOS -->
+        <div class="results" id="resultsSection">
+            <div class="result-card market">
+                <div>
+                    <div class="result-title">Valor Comercial de Mercado</div>
+                    <div id="unitPriceMarket" style="font-size: 12px; color: var(--text-muted);"></div>
+                </div>
+                <div class="result-value" id="resMarket">$0</div>
+            </div>
+
+            <div class="result-card express">
+                <div>
+                    <div class="result-title">Express Liquidity (-15%)</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">Venta rápida estimada</div>
+                </div>
+                <div class="result-value" id="resExpress">$0</div>
+            </div>
+
+            <div class="result-card remate">
+                <div>
+                    <div class="result-title">Valor de Remate (-25%)</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">Oportunidad / Liquidación</div>
+                </div>
+                <div class="result-value" id="resRemate">$0</div>
+            </div>
+
+            <!-- Gráfico Comparativo Visual -->
+            <div class="chart-container">
+                <div class="chart-title">Comparativa de Escenarios de Liquidez</div>
+                <div class="bar-wrapper">
+                    <div class="bar-label"><span>Mercado Regular</span><span id="labelBarMarket">0%</span></div>
+                    <div class="bar-track"><div class="bar-fill bar-market" id="barMarket" style="width: 100%;"></div></div>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar-label"><span>Express (-15%)</span><span id="labelBarExpress">85%</span></div>
+                    <div class="bar-track"><div class="bar-fill bar-express" id="barExpress" style="width: 85%;"></div></div>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar-label"><span>Remate (-25%)</span><span id="labelBarRemate">75%</span></div>
+                    <div class="bar-track"><div class="bar-fill bar-remate" id="barRemate" style="width: 75%;"></div></div>
+                </div>
+            </div>
+
+            <!-- Reporte Dinámico -->
+            <div class="report-box" id="reportContent"></div>
+
+            <!-- MODULO GAMIFICADO: CALIFICACIÓN 1 AL 10 -->
+            <div class="gamification-box">
+                <label style="color: var(--gold); font-size: 14px; margin-bottom: 5px;">¿Qué tanto te gustó esta herramienta interactiva?</label>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Valóranos del 1 al 10:</p>
+                <div class="rating-buttons" id="ratingContainer"></div>
+                <div id="ratingFeedback" style="font-size: 13px; color: var(--gold-light); margin-top: 10px; font-weight: bold;"></div>
+            </div>
+
+            <!-- CAPTURA DE LEADS Y PERFIL DE INTENCIÓN -->
+            <div class="lead-capture">
+                <h3>📥 Recibir Resumen Ejecutivo & Asesoría Directa</h3>
+                <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 0;">Completa tus datos para registrar tu solicitud y enviarla a WhatsApp:</p>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="leadName">Nombre Completo:</label>
+                        <input type="text" id="leadName" placeholder="Ej. Carlos Mendoza">
+                    </div>
+                    <div class="form-group">
+                        <label for="leadPhone">Tu Teléfono / WhatsApp:</label>
+                        <input type="text" id="leadPhone" placeholder="Ej. +51 999 888 777">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="userRole">Perfil de Usuario:</label>
+                        <select id="userRole">
+                            <option value="Propietario Vendedor">Propietario Vendedor</option>
+                            <option value="Comprador">Comprador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPurpose">Motivo del Inmueble:</label>
+                        <select id="userPurpose">
+                            <option value="Vivienda">Vivienda</option>
+                            <option value="Inversión">Inversión</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentMethod">Forma de Pago / Financiamiento:</label>
+                    <select id="paymentMethod">
+                        <option value="Crédito Hipotecario">Crédito Hipotecario</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Combinación (Efectivo + Crédito)">Combinación (Efectivo + Crédito)</option>
+                    </select>
+                </div>
+
+                <button class="btn-main" onclick="submitLeadToWhatsApp()">🚀 Registrar y Enviar a WhatsApp</button>
+                <div class="success-msg" id="successMsg">¡Datos registrados en Google Sheet y redirigiendo a WhatsApp!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dualMatrix = {
+            "Ancón": { depa: 850, casa: 1100 },
+            "Ate": { depa: 1300, casa: 1650 },
+            "Barranco": { depa: 2400, casa: 2950 },
+            "Breña": { depa: 1450, casa: 1800 },
+            "Carabayllo": { depa: 850, casa: 1150 },
+            "Cercado de Lima": { depa: 1500, casa: 1850 },
+            "Chaclacayo": { depa: 1150, casa: 1500 },
+            "Chorrillos": { depa: 1600, casa: 2050 },
+            "Cieneguilla": { depa: 900, casa: 1350 },
+            "Comas": { depa: 900, casa: 1200 },
+            "El Agustino": { depa: 1200, casa: 1500 },
+            "Independencia": { depa: 1100, casa: 1400 },
+            "Jesús María": { depa: 2100, casa: 2600 },
+            "La Molina": { depa: 1950, casa: 2650 },
+            "La Punta": { depa: 1700, casa: 2200 },
+            "Lince": { depa: 1950, casa: 2450 },
+            "Los Olivos": { depa: 1350, casa: 1700 },
+            "Lurigancho-Chosica": { depa: 1050, casa: 1400 },
+            "Lurín": { depa: 950, casa: 1300 },
+            "Magdalena del Mar": { depa: 2150, casa: 2650 },
+            "Miraflores": { depa: 2750, casa: 3400 },
+            "Pachacamac": { depa: 850, casa: 1250 },
+            "Pucusana": { depa: 1100, casa: 1550 },
+            "Pueblo Libre": { depa: 1900, casa: 2400 },
+            "Puente Piedra": { depa: 900, casa: 1200 },
+            "Punta Hermosa": { depa: 1750, casa: 2300 },
+            "Punta Negra": { depa: 1500, casa: 2000 },
+            "Rímac": { depa: 1250, casa: 1600 },
+            "San Bartolo": { depa: 1450, casa: 1850 },
+            "San Borja": { depa: 2200, casa: 2850 },
+            "San Isidro": { depa: 2900, casa: 3600 },
+            "San Juan de Lurigancho": { depa: 1000, casa: 1350 },
+            "San Juan de Miraflores": { depa: 950, casa: 1250 },
+            "San Luis": { depa: 1750, casa: 2200 },
+            "San Miguel": { depa: 1950, casa: 2450 },
+            "Santa Anita": { depa: 1250, casa: 1600 },
+            "Santa María del Mar": { depa: 2200, casa: 2900 },
+            "Santiago de Surco": { depa: 2150, casa: 2750 },
+            "Surquillo": { depa: 1900, casa: 2350 },
+            "Ventanilla": { depa: 800, casa: 1100 },
+            "Villa El Salvador": { depa: 900, casa: 1200 },
+            "Villa María del Triunfo": { depa: 850, casa: 1150 }
+        };
+
+        // REEMPLAZA ESTA URL CON TU URL DE GOOGLE APPS SCRIPT
+        const GOOGLE_SCRIPT_URL = "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI";
+
+        let currentValuationData = {};
+        let userRatingScore = "No calificado";
+
+        window.onload = function() {
+            const selectDistrict = document.getElementById("district");
+            const sortedDistricts = Object.keys(dualMatrix).sort();
+            sortedDistricts.forEach(district => {
+                let option = document.createElement("option");
+                option.value = district;
+                option.textContent = district;
+                if (district === "San Luis") option.selected = true;
+                selectDistrict.appendChild(option);
+            });
+
+            const ratingContainer = document.getElementById("ratingContainer");
+            for (let i = 1; i <= 10; i++) {
+                let btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "rate-btn";
+                btn.textContent = i;
+                btn.onclick = function() { rateApp(i, btn); };
+                ratingContainer.appendChild(btn);
+            }
+        };
+
+        function rateApp(score, element) {
+            document.querySelectorAll(".rate-btn").forEach(b => b.classList.remove("selected"));
+            element.classList.add("selected");
+            userRatingScore = `${score}/10`;
+            const feedback = document.getElementById("ratingFeedback");
+            if (score >= 9) {
+                feedback.textContent = `🌟 ¡Muchas gracias! Nos alegra un ${score * 10}% que te encante ValoraPro.`;
+            } else if (score >= 7) {
+                feedback.textContent = `👍 ¡Gracias por tu valoración de ${score}/10! Seguimos mejorando para ti.`;
+            } else {
+                feedback.textContent = `✍️ Tomamos nota de tu ${score}/10 para optimizar la herramienta. ¡Gracias!`;
+            }
+        }
+
+        function calculateValuation() {
+            const district = document.getElementById("district").value;
+            const propertyType = document.getElementById("propertyType").value;
+            const techadaArea = parseFloat(document.getElementById("techadaArea").value);
+            const totalArea = parseFloat(document.getElementById("totalArea").value);
+            const antiguedad = parseInt(document.getElementById("antiguedad").value) || 0;
+            const dormitorios = document.getElementById("dormitorios").value;
+            const banos = document.getElementById("banos").value;
+            const cocheras = document.getElementById("cocheras").value;
+            const cocina = document.getElementById("cocina").value;
+            const jardin = document.getElementById("jardin").value;
+
+            if (!techadaArea || techadaArea <= 0 || !totalArea || totalArea <= 0) {
+                alert("Por favor ingrese áreas válidas en metros cuadrados.");
+                return;
+            }
+
+            let unitPrice = dualMatrix[district][propertyType];
+            let deprecationFactor = Math.max(0.85, 1 - (antiguedad * 0.005));
+            let adjustedUnitPrice = unitPrice * deprecationFactor;
+
+            const marketTotal = adjustedUnitPrice * techadaArea;
+            const expressTotal = marketTotal * 0.85;
+            const remateTotal = marketTotal * 0.75;
+
+            currentValuationData = {
+                district,
+                propertyType: propertyType === 'depa' ? 'Departamento' : 'Casa',
+                techadaArea,
+                totalArea,
+                antiguedad,
+                dormitorios,
+                banos,
+                marketTotal: Math.round(marketTotal),
+                expressTotal: Math.round(expressTotal),
+                remateTotal: Math.round(remateTotal)
+            };
+
+            document.getElementById("unitPriceMarket").textContent = `Valor ajustado: $${Math.round(adjustedUnitPrice).toLocaleString()} / m² (Base: $${unitPrice})`;
+            document.getElementById("resMarket").textContent = `$ ${Math.round(marketTotal).toLocaleString()}`;
+            document.getElementById("resExpress").textContent = `$ ${Math.round(expressTotal).toLocaleString()}`;
+            document.getElementById("resRemate").textContent = `$ ${Math.round(remateTotal).toLocaleString()}`;
+
+            document.getElementById("labelBarMarket").textContent = `$ ${Math.round(marketTotal).toLocaleString()}`;
+            document.getElementById("labelBarExpress").textContent = `$ ${Math.round(expressTotal).toLocaleString()}`;
+            document.getElementById("labelBarRemate").textContent = `$ ${Math.round(remateTotal).toLocaleString()}`;
+
+            const reportHTML = `
+                <strong>Reporte Ejecutivo de Oportunidades & Características:</strong><br>
+                Inmueble tipo <strong>${currentValuationData.propertyType}</strong> en <strong>${district}</strong> con <strong>${techadaArea} m²</strong> techados (sobre <strong>${totalArea} m²</strong> totales). 
+                Antigüedad: <strong>${antiguedad} años</strong> | <strong>${dormitorios} dorm.</strong> | <strong>${banos} baños</strong> | Cocina <strong>${cocina}</strong> | Cochera: <strong>${cocheras}</strong>.<br>
+                Valor comercial estimado: <strong>$${Math.round(marketTotal).toLocaleString()}</strong> | Colocación Express: <strong>$${Math.round(expressTotal).toLocaleString()}</strong> | Piso Remate: <strong>$${Math.round(remateTotal).toLocaleString()}</strong>.
+            `;
+            document.getElementById("reportContent").innerHTML = reportHTML;
+            document.getElementById("resultsSection").classList.add("active");
+            document.getElementById("resultsSection").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitLeadToWhatsApp() {
+            const name = document.getElementById("leadName").value.trim();
+            const phone = document.getElementById("leadPhone").value.trim();
+            const userRole = document.getElementById("userRole").value;
+            const userPurpose = document.getElementById("userPurpose").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+
+            if (!name || !phone) {
+                alert("Por favor ingrese su Nombre y número de Teléfono/WhatsApp para continuar.");
+                return;
+            }
+
+            if (!currentValuationData.marketTotal) {
+                alert("Por favor ejecute primero la tasación interactiva.");
+                return;
+            }
+
+            const payload = {
+                name,
+                phone,
+                userRole,
+                userPurpose,
+                paymentMethod,
+                userRatingScore,
+                district: currentValuationData.district,
+                propertyType: currentValuationData.propertyType,
+                techadaArea: currentValuationData.techadaArea,
+                totalArea: currentValuationData.totalArea,
+                antiguedad: currentValuationData.antiguedad,
+                marketTotal: currentValuationData.marketTotal,
+                expressTotal: currentValuationData.expressTotal,
+                remateTotal: currentValuationData.remateTotal
+            };
+
+            // Enviar datos en segundo plano a Google Sheet (si se configuró la URL)
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbzKvXB6fEiguIb3KSxlxQECwU6lVuJAR3BqNseRHfgm62ZmgJzOHomP9l1UI5E54LeA/exec") {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).catch(err => console.log("Error registrando en Google Sheet:", err));
+            }
+
+            document.getElementById("successMsg").style.display = "block";
+
+            // Estructurar el mensaje para WhatsApp
+            const message = `*🏢 NUEVO LEAD DESDE VALORAPRO*
+            
+*👤 Datos del Prospecto:*
+• Nombre: ${name}
+• WhatsApp: ${phone}
+• Perfil: ${userRole}
+• Motivo: ${userPurpose}
+• Forma de Pago: ${paymentMethod}
+• Calificación App: ${userRatingScore}
+
+*🏠 Detalles del Inmueble:*
+• Tipo: ${currentValuationData.propertyType}
+• Distrito: ${currentValuationData.district}
+• Área Techada: ${currentValuationData.techadaArea} m² (Total: ${currentValuationData.totalArea} m²)
+• Antigüedad: ${currentValuationData.antiguedad} años (${currentValuationData.dormitorios} dorm. / ${currentValuationData.banos} baños)
+
+*💰 Resultados de Tasación:*
+• Valor Comercial: $${currentValuationData.marketTotal.toLocaleString()}
+• Express Liquidity (-15%): $${currentValuationData.expressTotal.toLocaleString()}
+• Valor de Remate (-25%): $${currentValuationData.remateTotal.toLocaleString()}
+
+_Solicito el Resumen Ejecutivo en PDF y asesoría personalizada._`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/51993224286?text=${encodedMessage}`;
+
+            setTimeout(() => {
+                window.open(whatsappUrl, '_blank');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
