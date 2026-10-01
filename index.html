@@ -680,7 +680,7 @@
 
             document.getElementById("successMsg").style.display = "block";
 
-            // Estructurar el mensaje para WhatsApp
+// Estructurar el mensaje para WhatsApp
             const message = `*🏢 NUEVO LEAD DESDE VALORAPRO*
             
 *👤 Datos del Prospecto:*
@@ -702,8 +702,8 @@
 • Express Liquidity (-15%): $${currentValuationData.expressTotal.toLocaleString()}
 • Valor de Remate (-25%): $${currentValuationData.remateTotal.toLocaleString()}
 
-_Solicito el Resumen Ejecutivo en PDF y asesoría personalizada._`
-_*Nota: Valores estimados referenciales, no constituyen tasación oficial.*_`;          
+_Solicito el Resumen Ejecutivo en PDF y asesoría personalizada._
+_Nota: Valores estimados referenciales, no constituyen tasación oficial._`;     
 
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/51993224286?text=${encodedMessage}`;
