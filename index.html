@@ -366,7 +366,10 @@
         </div>
 
         <button class="btn-main" onclick="calculateValuation()">⚡ Ejecutar Tasación Interactiva</button>
-
+<p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 10px;">
+    ⚠️ <strong>Estimación referencial:</strong> valores aproximados basados en precios promedio por distrito. 
+    No sustituye una tasación oficial realizada por un perito colegiado.
+</p>
         <!-- RESULTADOS -->
         <div class="results" id="resultsSection">
             <div class="result-card market">
@@ -465,6 +468,18 @@
 
                 <button class="btn-main" onclick="submitLeadToWhatsApp()">🚀 Registrar y Enviar a WhatsApp</button>
                 <div class="success-msg" id="successMsg">¡Datos registrados en Google Sheet y redirigiendo a WhatsApp!</div>
+                <!-- DISCLAIMER LEGAL -->
+<div style="margin-top: 25px; padding: 15px; background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-color); border-radius: 8px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
+    <strong style="color: var(--gold);">Aviso Legal:</strong> 
+    ValoraPro es una herramienta de <strong style="color: var(--gold-light);">estimación referencial automatizada</strong>. 
+    Los valores generados (mercado, express y remate) se calculan con rangos promedio por distrito y características generales del inmueble. 
+    <strong style="color: var(--gold-light);">No constituyen una tasación oficial ni una oferta vinculante.</strong> 
+    Para fines legales, hipotecarios o de compraventa se requiere una tasación emitida por un 
+    <strong style="color: var(--gold-light);">perito colegiado y habilitado</strong>, conforme a los estándares de la 
+    Superintendencia de Banca, Seguros y AFP (SBS) y registros de SUNARP. 
+    Al usar esta herramienta, el usuario acepta que los resultados son orientativos y que ValoraPro 
+    no se responsabiliza por decisiones tomadas con base en estas estimaciones.
+</div>
             </div>
         </div>
     </div>
@@ -687,7 +702,8 @@
 • Express Liquidity (-15%): $${currentValuationData.expressTotal.toLocaleString()}
 • Valor de Remate (-25%): $${currentValuationData.remateTotal.toLocaleString()}
 
-_Solicito el Resumen Ejecutivo en PDF y asesoría personalizada._`;
+_Solicito el Resumen Ejecutivo en PDF y asesoría personalizada._`
+_*Nota: Valores estimados referenciales, no constituyen tasación oficial.*_`;          
 
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/51993224286?text=${encodedMessage}`;
